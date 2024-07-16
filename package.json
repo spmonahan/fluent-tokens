@@ -1,0 +1,15 @@
+{
+  "name": "fluent-tokens",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "find": "node ./find-token-usage.js"
+  },
+  "dependencies": {
+    "@fluentui/tokens": "^1.0.0-alpha.16",
+    "export-to-csv": "^1.3.0",
+    "glob": "^11.0.0"
+  }
+}
