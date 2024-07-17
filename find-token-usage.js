@@ -25,7 +25,7 @@ for (const file of files) {
 
       const value = tokens.get(token);
       value.count += 1;
-      if (!value.files.includes(file)) {
+      if (!value.files.includes(file.replace(fluentPath, ''))) {
         value.files.push(file.replace(fluentPath, ''));
       }
 
@@ -73,12 +73,21 @@ csv = generateCsv(csvConfig)(usageData);
 csvBuffer = new Uint8Array(Buffer.from(asString(csv)));
 writeFileSync('token-usage-summary.csv', csvBuffer);
 
+// Unused tokens
+const allTokens = Object.keys(fluentTokens.tokens);
+const unusedTokens = allTokens.filter(token => !csvData.find(item => item.token === token)).map(token => ({ 'Unused tokens': token }));
+csvConfig = mkConfig({ columnHeaders: [ 'Unused tokens' ] });
+csv = generateCsv(csvConfig)(unusedTokens);
+csvBuffer = new Uint8Array(Buffer.from(asString(csv)));
+writeFileSync('token-unused-list.csv', csvBuffer);
+
 // Filtered usage
 // Removes palette tokens that are mostly isolated two controls (Avatar and Badge)
 const filteredCsvData = csvData.filter(item => {
   return !item.token.includes('Palette');
 });
 
+csvConfig = mkConfig({ useKeysAsHeaders: true });
 csv = generateCsv(csvConfig)(filteredCsvData);
 csvBuffer = new Uint8Array(Buffer.from(asString(csv)));
 writeFileSync('token-usage-filtered.csv', csvBuffer);
